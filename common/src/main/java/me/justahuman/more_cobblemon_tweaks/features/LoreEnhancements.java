@@ -2,6 +2,7 @@ package me.justahuman.more_cobblemon_tweaks.features;
 
 import me.justahuman.more_cobblemon_tweaks.config.ModConfig;
 import me.justahuman.more_cobblemon_tweaks.features.egg.EnhancedEggLore;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import org.apache.commons.lang3.StringUtils;
@@ -16,6 +17,8 @@ public class LoreEnhancements {
     public static void enhanceEggLore(List<Component> lore, List<Component> newLore, EnhancedEggLore enhancedEggLore) {
         Component name = enhancedEggLore.getName(lore);
         final boolean shiny = enhancedEggLore.isShiny();
+
+
         if (ModConfig.isEnabled("shiny_egg_indicator") && shiny) {
             name = name.copy().append(Component.literal(" ★").withStyle(YELLOW));
         }
@@ -70,45 +73,34 @@ public class LoreEnhancements {
         }
 
         if (enhancedEggLore.hasIVs()) {
-            Integer hp = enhancedEggLore.getHpIV();
-            Integer attack = enhancedEggLore.getAtkIV();
-            Integer defense = enhancedEggLore.getDefIV();
-            Integer spAttack = enhancedEggLore.getSpAtkIV();
-            Integer spDefense = enhancedEggLore.getSpDefIV();
-            Integer speed = enhancedEggLore.getSpeedIV();
-
             if (spacer) {
                 newLore.add(Component.literal(" "));
             }
 
-            if (hp != null && hp != -1) {
-                newLore.add(translate("egg.iv.hp").withStyle(GREEN)
-                        .append(Component.literal(String.valueOf(hp)).withStyle(WHITE)));
-            }
-            if (attack != null && attack != -1) {
-                newLore.add(translate("egg.iv.attack").withStyle(RED)
-                        .append(Component.literal(String.valueOf(attack)).withStyle(WHITE)));
-            }
-            if (defense != null && defense != -1) {
-                newLore.add(translate("egg.iv.defense").withStyle(GOLD)
-                        .append(Component.literal(String.valueOf(defense)).withStyle(WHITE)));
-            }
-            if (spAttack != null && spAttack != -1) {
-                newLore.add(translate("egg.iv.sp_attack").withStyle(LIGHT_PURPLE)
-                        .append(Component.literal(String.valueOf(spAttack)).withStyle(WHITE)));
-            }
-            if (spDefense != null && spDefense != -1) {
-                newLore.add(translate("egg.iv.sp_defense").withStyle(YELLOW)
-                        .append(Component.literal(String.valueOf(spDefense)).withStyle(WHITE)));
-            }
-            if (speed != null && speed != -1) {
-                newLore.add(translate("egg.iv.speed").withStyle(AQUA)
-                        .append(Component.literal(String.valueOf(speed)).withStyle(WHITE)));
-            }
+            addIvLine(newLore, "egg.iv.hp", enhancedEggLore.getHpIV(), ChatFormatting.GREEN);
+            addIvLine(newLore, "egg.iv.attack", enhancedEggLore.getAtkIV(), ChatFormatting.RED);
+            addIvLine(newLore, "egg.iv.defense", enhancedEggLore.getDefIV(), ChatFormatting.GOLD);
+            addIvLine(newLore, "egg.iv.sp_attack", enhancedEggLore.getSpAtkIV(), ChatFormatting.LIGHT_PURPLE);
+            addIvLine(newLore, "egg.iv.sp_defense", enhancedEggLore.getSpDefIV(), ChatFormatting.YELLOW);
+            addIvLine(newLore, "egg.iv.speed", enhancedEggLore.getSpeedIV(), ChatFormatting.AQUA);
         }
     }
 
     public static MutableComponent translate(String key, Object... args) {
         return Component.translatable(BASE_KEY + key, args);
+    }
+
+    private static ChatFormatting colorForIv(Integer iv) {
+        if (iv == null || iv < 0) return ChatFormatting.DARK_GRAY;
+        if (iv == 31) return BOLD;
+        return ChatFormatting.WHITE;
+    }
+
+    private static void addIvLine(List<Component> out, String i18nKey, Integer iv, ChatFormatting labelColor) {
+        if (iv == null || iv < 0) return;
+        out.add(
+                translate(i18nKey).withStyle(labelColor)
+                        .append(Component.literal(Integer.toString(iv)).withStyle(colorForIv(iv)))
+        );
     }
 }

@@ -1,0 +1,12 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "cobbreeding:item/normal_pokemon_egg",
+    "layer1": "cobbreeding:item/grass_spots"
+  },
+  "overrides": [
+    { "predicate": { "more_cobblemon_tweaks:egg_state": 0.1 }, "model": "more_cobblemon_tweaks:item/egg_shiny" },
+    { "predicate": { "more_cobblemon_tweaks:egg_state": 0.2 }, "model": "more_cobblemon_tweaks:item/egg_perfect" },
+    { "predicate": { "more_cobblemon_tweaks:egg_state": 0.3 }, "model": "more_cobblemon_tweaks:item/egg_shiny_perfect" }
+  ]
+}
